@@ -19,6 +19,7 @@ router.get('/ayuda', function(req, res, next) {
 
 
 
+
 // Autoload de rutas que usen :quizId
 router.param('quizId', quizController.load);
 
@@ -37,6 +38,7 @@ router.get('/quizzes/:quizId(\\d+)/check', quizController.check);
 
 router.get('/quizzes/randomplay',  quizController.randomplay);
 router.get('/quizzes/randomcheck/:quizId(\\d+)', quizController.randomcheck);
+
 
 
 module.exports = router;
