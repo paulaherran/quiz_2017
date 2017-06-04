@@ -1,5 +1,6 @@
 var models = require("../models");
 var Sequelize = require('sequelize');
+var score = 0;
 
 var paginate = require('../helpers/paginate').paginate;
 
@@ -220,5 +221,92 @@ exports.check = function (req, res, next) {
         quiz: req.quiz,
         result: result,
         answer: answer
+    });
+};
+
+
+// GET /quizzes/:quizId/play
+exports.randomplay = function (req, res, next) {
+
+
+
+    if(!req.session.score) req.session.score=0;
+    if(!req.session.quizzes) req.session.quizzes=[-1];
+
+    
+
+    models.Quiz.count()
+    .then(function (count) {
+    
+        return models.Quiz.findAll({
+
+            where:  {id: {$notIn: req.session.quizzes}}
+
+        })
+        
+     })              
+    .then(function(quizzes){
+        var quizID=-1;
+        if(quizzes.length>0){
+            var aleatorio = parseInt(Math.random()*quizzes.length);
+            quizID=quizzes[aleatorio].id;
+
+        }else{
+            res.render('quizzes/random_nomore', {
+
+                
+                score: req.session.score
+                
+            });
+        }
+
+        return models.Quiz.findById(quizID);
+
+    })
+    .then(function(quiz){
+        if(quiz){
+            req.session.quizzes.push(quiz.id);
+       
+            res.render('quizzes/random_play', {
+
+                quiz: quiz,
+                score: req.session.score,
+              
+
+            });
+        }
+    
+ })
+    .catch(function(error) {
+      req.flash('error', 'Error al cargar el quiz' + error.message);
+      next(error);
+
+    });
+};
+
+
+
+// GET /quizzes/random_check
+exports.randomcheck = function (req, res, next) {
+
+    
+
+    var answer = req.query.answer || '';
+
+    var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
+    if (result){
+        req.session.score++;
+    }else{
+        req.session.score=0;
+        req.session.quizzes=[-1];
+    }
+
+    
+
+    res.render('quizzes/random_result', {
+        score: req.session.score,
+        quiz: req.quiz,
+        result: result,
+        answer: answer  
     });
 };
