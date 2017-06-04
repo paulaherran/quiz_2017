@@ -14,7 +14,7 @@ module.exports = {
                 },
                 QuizId: {
                     type: Sequelize.INTEGER
-                },
+                }, 
                 text: {
                     type: Sequelize.STRING,
                     validate: {notEmpty: {msg: "Falta el texto de la Pista."}}

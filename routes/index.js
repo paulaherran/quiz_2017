@@ -53,6 +53,7 @@ router.param('userId', userController.load);
 router.param('tipId',  tipController.load);
 
 
+
 // Definición de rutas de sesion
 router.get('/session', sessionController.new);     // formulario login
 router.post('/session', sessionController.create);  // crear sesión
@@ -115,6 +116,9 @@ router.get('/quizzes/:quizId(\\d+)/play',
     quizController.play);
 router.get('/quizzes/:quizId(\\d+)/check',
     quizController.check);
+
+// Definición de rutas de tips
+
 
 
 router.get('/quizzes/:quizId(\\d+)/tips/new',
